@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Firebase 3</title>
+	<script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-messaging.js"></script>
+	<script type="text/javascript" src="util.js"></script>
+	<script type="text/javascript" src="SignIn.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+	
+	<div id="LogInDiv">
+		<h4>Email</h4>
+		<input type="text" id="logInEmail">	
+		<br>
+		<h4>Password</h4>
+		<input type="password" id="logInPwd">
+		<br>
+		<button id="logInButton">Log In</button>
+		<button id="ShowSignInButton">Sign In</button>
+	</div>
+
+	<div id="SignInDiv">
+		<h4>Nickname</h4>
+		<input type="text" id="SignInNickname">	
+		<br>
+		<h4>Image url</h4>
+		<input type="text" id="SignInAvatar">	
+		<br>
+		<h4>Email</h4>
+		<input type="text" id="SignInEmail">	
+		<br>
+		<h4>Password</h4>
+		<input type="password" id="SignInPwd">
+		<br>
+		<button id="SignInButton">SignIn</button>
+	</div>
+
+	<div id="MainDiv">
+		<div id="UserDiv">
+			<img src="http://i1.silvergames.com/p/b/homer-simpson-saw-game.png" id="Avatar">
+			<h1 id="UserDivName">Benvenuto...</h1>
+			<br>
+			<textarea id="PostText" rows="4" cols="50"></textarea>
+			<br>
+			<button id="PostBtn">post</button>
+			<button id="LogOutBtn">Log Out</button>
+		</div>
+		
+
+		<h2>Bacheca</h2>
+		<div id="PostWall">
+			
+		</div>
+	</div>
+
+	<script>
+	$(document).ready(function(){
+
+		bootstrap();
+
+
+		if(!logged)
+		{
+			$("#MainDiv").hide();
+			$("#SignInDiv").hide();
+		}
+
+		$("#logInButton").on("click",function () {
+			logIn($("#logInEmail").val(), $("#logInPwd").val());
+		});
+
+		$("#LogOutBtn").on("click",function () {
+			firebase.auth().signOut();
+			logged = !logged;
+			UserUid = null;
+			UserEmail = null;
+			UserAvatar = "";
+
+			$("#MainDiv").hide();
+			$("#LogInDiv").show();
+		});
+
+		$("#ShowSignInButton").on("click",function () {
+			$("#MainDiv").hide();
+			$("#LogInDiv").hide();
+			$("#SignInDiv").show();
+		})
+
+			
+		firebase.auth().onAuthStateChanged(function(user) {
+
+			console.log("user"); 
+			console.dir(user); 	
+
+
+			if (user !=null && !logged) 
+			{
+				
+				
+				if(userRegisted)
+				{
+					alert("Registering");
+					var db = firebase.database();
+					alert("users/" + user.uid);
+					db.ref("users/" + user.uid).set({
+						Nickname:SignIn.SignInNickname,
+						Avatar:SignIn.SignInAvatar,
+						Email:SignIn.SignInEmail
+					});
+					userRegisted= false;
+					$("#SignInDiv").hide();
+					logged = true;
+				}
+
+				initInfoUser(user.uid)
+
+				$("#MainDiv").show();
+				$("#LogInDiv").hide();
+
+				
+				logged = true;
+				ListenPublicUpdates();
+				
+			}
+			console.log("Logged->"+logged);
+		});
+
+		
+
+		$("#PostBtn").on("click",function () {
+			var db = firebase.database();
+			var text = $("#PostText").val();
+			var path = "public/" + $.now();	
+				
+			db.ref(path).set({
+				email: UserEmail,
+				Nickname: UserNickname,
+				textPost: text,
+				time:$.now(),
+				avatar:UserAvatar
+			});
+			console.log("posted");
+		});
+
+		$("#SignInButton").on("click",function () {
+			var SignInNickname = $("#SignInNickname").val();
+			var SignInAvatar	 = $("#SignInAvatar").val();
+			var SignInEmail 	 = $("#SignInEmail").val();
+			var SignInPwd 	 = $("#SignInPwd").val();
+
+			console.log("#" + SignInNickname + "#");
+			console.log("#" + SignInAvatar + "#");
+			console.log("#" + SignInEmail + "#");
+			console.log("#" + SignInPwd + "#");
+			if(SignInNickname != "" && SignInAvatar != "" && SignInEmail != "" && SignInPwd != "" )
+			{
+				signIn(SignInNickname,SignInAvatar,SignInEmail,SignInPwd)
+			}
+			else
+			{
+				alert("COMPLETA TUTTI I CAMPI")
+			}
+
+		})
+
+	});
+	</script>
+
+</body>
+</html>

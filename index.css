@@ -1,0 +1,98 @@
+*
+{
+	font-family: 'Roboto', sans-serif;
+}
+#PostWall
+{
+	border: solid black 1px;
+	margin-right: 50%;
+}
+#PostBtn
+{
+	margin-bottom: 10px;
+}
+
+.post
+{
+	border: solid black 1px;	
+	margin: 10px;
+	padding: 10px;
+}
+
+.post img
+{
+	float: left; 
+	width: 100px;
+	height: 100px;
+	border: solid black 1px;
+	border-radius: 50%;	
+}
+
+.TimePost
+{
+	font-size: 12px;
+	text-align: right;
+	padding-right: 5px;
+}
+
+.TextPost
+{
+	padding-left: 10px;
+}
+
+.PostUserInfo
+{
+	width:100%;
+	background-color: #D2D3D8;
+}
+
+.PostUserInfo h3
+{
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.PostUserInfo p
+{
+	padding-bottom: 5px;
+}
+
+#Avatar
+{
+	float: left; 
+	width: 150px;
+	height: 150px;
+	border: solid black 1px;	
+	border-radius: 50%;
+}
+
+#UserDiv
+{
+	border: solid black 1px;	
+	padding: 10px;
+	
+}
+
+#LogInDiv , #SignInDiv
+{
+	border: solid black 1px;	
+	width:25%;
+	text-align: center;
+	position: center;
+	margin:0 auto;
+}
+#LogInDiv button
+{
+	margin: 10px;
+}
+#LogInDiv input
+{
+	text-align: center;
+}
+#SignInDiv button
+{
+	margin: 10px;
+}
+#SignInDiv  input
+{
+	text-align: center;
+}
